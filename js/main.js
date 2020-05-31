@@ -22,16 +22,20 @@ let datasets = [];
 
 const setDomainAndAxis = data => {
 
+    let maxOfX = d3.max(data, d => d.x);
+    let maxOfY = d3.max(data, d => d.y);
+    let maxOfDomain = maxOfX > maxOfY ? maxOfX : maxOfY;
+
     // 3 - Creating  linear scale: mapping del dominio (Data Space) -> Range (Pixel Scale)
     xScale = d3.scaleLinear()
-        .domain([0, d3.max(data, d => d.x)])
+        .domain([0, maxOfDomain])
         .range([0, innerWidth]);
 
     // Test domain
     console.log("Domain for x: " + xScale.domain() + "\n Range for x:" +xScale.range());
 
     yScale = d3.scaleLinear()
-        .domain([0, d3.max(data, d => d.y)])
+        .domain([0, maxOfDomain])
         .range([innerHeight, 0])
     // Test domain
     console.log("Domain for y: " + yScale.domain() + "\n Range for y:" +yScale.range());
@@ -45,14 +49,6 @@ const setDomainAndAxis = data => {
         .attr("class", "y")
         .call(d3.axisLeft(yScale));
 
-}
-
-const updateDomainAndAxis = data => {
-
-    xScale.domain([0, d3.max(data, d => d.x)]);
-    yScale.domain([0, d3.max(data, d => d.y)]);
-    g.select("g.x").call(d3.axisBottom(xScale));
-    g.select("g.y").call(d3.axisLeft(yScale));
 }
 
 // 2 - Creating a rectangle for each row
@@ -81,7 +77,6 @@ function updateDatasetsExceptPosition(position){
 
     // Update Datasets Values
     console.log(datasets);
-    updateDomainAndAxis(datasets);
     render(datasets);
 }
 
