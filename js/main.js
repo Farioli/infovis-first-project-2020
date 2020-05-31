@@ -37,12 +37,12 @@ const setDomainAndAxis = data => {
     console.log("Domain for y: " + yScale.domain() + "\n Range for y:" +yScale.range());
 
     g.append('g')
-        .attr("class", "x axis")
+        .attr("class", "x")
         .attr('transform', `translate(0 , ${innerHeight})`)
         .call(d3.axisBottom(xScale));
 
     g.append('g')
-        .attr("class", "y axis")
+        .attr("class", "y")
         .call(d3.axisLeft(yScale));
 
 }
@@ -51,8 +51,8 @@ const updateDomainAndAxis = data => {
 
     xScale.domain([0, d3.max(data, d => d.x)]);
     yScale.domain([0, d3.max(data, d => d.y)]);
-    g.select(".x.axis").transition().duration(1000).call(xScale);
-    g.select(".y.axis").transition().duration(1000).call(yScale);
+    g.select("g.x").call(d3.axisBottom(xScale));
+    g.select("g.y").call(d3.axisLeft(yScale));
 }
 
 // 2 - Creating a rectangle for each row
@@ -79,16 +79,10 @@ function updateDatasetsExceptPosition(position){
         }
     });
 
+    // Update Datasets Values
     console.log(datasets);
     updateDomainAndAxis(datasets);
     render(datasets);
-
-    // // Update Datasets Values
-    // setTimeout( () => { 
-    //     xScale.domain(0, d3.max(datasets, datasets.x));
-    //     yScale.domain(0, d3.max(datasets, datasets.y));
-    //     render(datasets);
-    // }, 1000)
 }
 
 d3.json('data.json').then(data => {
