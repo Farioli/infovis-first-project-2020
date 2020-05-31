@@ -22,11 +22,12 @@ let datasets = [];
 
 const setDomainAndAxis = data => {
 
+    // Decide the max of the domain
     let maxOfX = d3.max(data, d => d.x);
     let maxOfY = d3.max(data, d => d.y);
     let maxOfDomain = maxOfX > maxOfY ? maxOfX : maxOfY;
 
-    // 3 - Creating  linear scale: mapping del dominio (Data Space) -> Range (Pixel Scale)
+    // Creating linear scale: mapping del dominio (Data Space) -> Range (Pixel Scale)
     xScale = d3.scaleLinear()
         .domain([0, maxOfDomain])
         .range([0, innerWidth]);
