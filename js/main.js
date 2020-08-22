@@ -3,7 +3,7 @@
 // Selection of all svg of the page
 const svg = d3.select('svg');
 
-const width = +svg.attr('width'); 
+const width = +svg.attr('width');
 const height = +svg.attr('height');
 
 const margin = { top: 20, right: 20, bottom: 20, left: 100, };
@@ -33,13 +33,13 @@ const setDomainAndAxis = data => {
         .range([0, innerWidth]);
 
     // Test domain
-    console.log("Domain for x: " + xScale.domain() + "\n Range for x:" +xScale.range());
+    console.log("Domain for x: " + xScale.domain() + "\n Range for x:" + xScale.range());
 
     yScale = d3.scaleLinear()
         .domain([0, maxOfDomain])
         .range([innerHeight, 0])
     // Test domain
-    console.log("Domain for y: " + yScale.domain() + "\n Range for y:" +yScale.range());
+    console.log("Domain for y: " + yScale.domain() + "\n Range for y:" + yScale.range());
 
     g.append('g')
         .attr("class", "x")
@@ -56,20 +56,40 @@ const setDomainAndAxis = data => {
 const render = data => {
 
     console.log("Data rendering");
+
     // D3 data JOIN
-    g.selectAll('circle').data(data)
-        .join('circle')
-            .attr('id', (d, i) => i)
-            .attr('r', circleRadius)
-            .attr('cx', d => xScale(d.x))
-            .attr('cy', d => yScale(d.y))
-        .on('click', function(d,i){ updateDatasetsExceptPosition(i);  })
+    g.selectAll('circle')
+        .data(data)
+        .join(
+            enter => enter.append('circle')
+                .attr('id', (d, i) => "cir_" + i)
+                .attr('r', circleRadius)
+                .attr('cx', d => xScale(d.x))
+                .attr('cy', d => yScale(d.y))
+                .on('click', function (d, i) { updateDatasetsExceptPosition(i); }),
+            update => update.transition()
+                .attr('cx', d => xScale(d.x))
+                .attr('cy', d => yScale(d.y))
+                .attr("fill", "green")
+                .duration(1500),
+            exit => exit.remove()
+        )
+
+    // OLD
+    // .join('circle')
+    // .attr('id', (d, i) => "cir_" + i)
+    // .attr('r', circleRadius)
+    // .attr('cx', d => xScale(d.x))
+    // .attr('cy', d => yScale(d.y))
+    // .on('click', function (d, i) { updateDatasetsExceptPosition(i); });
+
+
 }
 
-function updateDatasetsExceptPosition(position){
+function updateDatasetsExceptPosition(position) {
 
-    datasets.forEach( (d,i) => {
-        if(i != position){
+    datasets.forEach((d, i) => {
+        if (i != position) {
             temp = d.x;
             d.x = d.y;
             d.y = temp;
